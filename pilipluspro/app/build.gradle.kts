@@ -1,9 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.JvmCompile
-
 plugins {
     alias(libs.plugins.android.application)
-    // 注意：这里已经按照报错提示，彻底删除了旧版的 kotlin.android 插件！
     alias(libs.plugins.kotlin.ksp)
 }
 
@@ -35,21 +31,6 @@ android {
         viewBinding = true
     }
     lint { checkReleaseBuilds = false }
-
-    // TODO Please visit https://highcapable.github.io/YukiHookAPI/en/api/special-features/host-inject
-    // TODO 请参考 https://highcapable.github.io/YukiHookAPI/zh-cn/api/special-features/host-inject
-    // androidResources.additionalParameters += listOf("--allow-reserved-package-id", "--package-id", "0x64")
-}
-
-tasks.withType<JvmCompile>().configureEach {
-    compilerOptions {
-        jvmTarget = JvmTarget.JVM_17
-        freeCompilerArgs.addAll(
-            "-Xno-param-assertions",
-            "-Xno-call-assertions",
-            "-Xno-receiver-assertions"
-        )
-    }
 }
 
 dependencies {
@@ -57,18 +38,18 @@ dependencies {
     ksp(libs.yukihookapi.ksp.xposed)
     implementation(libs.yukihookapi)
 
-    // Optional: KavaRef (https://github.com/HighCapable/KavaRef)
+    // Optional: KavaRef
     implementation(libs.kavaref.core)
     implementation(libs.kavaref.extension)
 
-    // Optional: Hikage (https://github.com/BetterAndroid/Hikage)
+    // Optional: Hikage
     ksp(libs.hikage.compiler)
     implementation(libs.hikage.core)
     implementation(libs.hikage.extension)
     implementation(libs.hikage.widget.androidx)
     implementation(libs.hikage.widget.material)
 
-    // Optional: BetterAndroid (https://github.com/BetterAndroid/BetterAndroid)
+    // Optional: BetterAndroid
     implementation(libs.betterandroid.ui.component)
     implementation(libs.betterandroid.ui.component.adapter)
     implementation(libs.betterandroid.ui.extension)
