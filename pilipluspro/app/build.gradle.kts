@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import org.jetbrains.kotlin.gradle.tasks.JvmCompile
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    // 注意：这里已经按照报错提示，彻底删除了旧版的 kotlin.android 插件！
     alias(libs.plugins.kotlin.ksp)
 }
 
@@ -41,7 +41,7 @@ android {
     // androidResources.additionalParameters += listOf("--allow-reserved-package-id", "--package-id", "0x64")
 }
 
-tasks.withType<KotlinJvmCompile>().configureEach {
+tasks.withType<JvmCompile>().configureEach {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_17
         freeCompilerArgs.addAll(
