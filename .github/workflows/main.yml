@@ -17,6 +17,10 @@ jobs:
 
       - name: Smart Build APK
         run: |
+          # 1. 魔法指令：全盘搜索 gradle 配置文件，并自动删除引起报错的旧版 Kotlin 插件代码
+          find . -name "*.gradle*" -exec sed -i '/org.jetbrains.kotlin.android/d' {} \;
+          
+          # 2. 赋予权限并打包
           find . -name "gradlew" -exec chmod +x {} \;
           find . -name "gradlew" -execdir ./gradlew assembleDebug \;
 
@@ -24,4 +28,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PiliPlusFPS-Module
-          path: "**/*.apk" # 终极修改：无视文件夹层级，全盘抓取所有生成的 apk
+          path: "**/*.apk"
