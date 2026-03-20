@@ -15,16 +15,26 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Smart Build APK
+      - name: Fix Kotlin Plugin Issue
         run: |
-          # 1. 魔法指令：全盘搜索 gradle 配置文件，并自动删除引起报错的旧版 Kotlin 插件代码
-          find . -name "*.gradle*" -exec sed -i '/org.jetbrains.kotlin.android/d' {} \;
-          
-          # 2. 赋予权限并打包
-          find . -name "gradlew" -exec chmod +x {} \;
-          find . -name "gradlew" -execdir ./gradlew assembleDebug \;
+          # 强力删除引起 AGP 9.0 冲突的旧版 Kotlin 插件声明
+          find . -type f \( -name "*.gradle" -o -name "*.gradle.kts" \) -exec sed -i '/org.jetbrains.kotlin.android/d' {} +
 
-      - name: Upload APK
+      - name: Build APK (Show Real Logs)
+        run: |
+          # 1. 智能定位到包含 gradlew 的项目根目录
+          WORK_DIR=$(dirname $(find . -name "gradlew" | head -n 1))
+          echo "🚀 发现项目目录: $WORK_DIR"
+          cd "$WORK_DIR"
+          
+          # 2. 赋予执行权限
+          chmod +x ./gradlew
+          
+          # 3. 开始打包！如果失败会立刻红灯并输出详细原因
+          ./gradlew assembleDebug --info --stacktrace
+
+      - name: Collect and Upload APK
+        if: always() # 无论成功失败，都尝试去抓取可能生成的 apk
         uses: actions/upload-artifact@v4
         with:
           name: PiliPlusFPS-Module
